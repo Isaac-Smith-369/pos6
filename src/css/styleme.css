@@ -1,0 +1,149 @@
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+  
+}
+
+/* Typography */
+
+html {
+  /* 62.5% of 16px = 10px */
+  font-size: 62.5%;
+  
+ 
+}
+
+body {
+  font-family: 'Montserrat', sans-serif, Arial, Helvetica, sans-serif;
+  background-image: url(../images/pstel.jpg),linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5));;
+  background-blend-mode: overlay;
+  background-size: cover;
+  line-height: 1.5;
+  color: rgb(106, 0, 206);
+}
+
+h1,
+h2,
+h3 {
+  color:rgb(94, 9, 174);
+  margin-bottom: 1rem;
+}
+
+h1 {
+  font-size: 7rem;
+  margin-top: 0;
+  font-family: 'Uncial Antiqua', Arial, Helvetica, sans-serif;
+  text-align: center;
+
+}
+
+h2 {
+  font-size: 4rem;
+  font-family: 'Uncial Antiqua', Arial, Helvetica, sans-serif;
+  margin-top: 0;
+}
+
+.section_name{
+  text-align: center;
+  margin-top: 20px;
+}
+
+
+h3 {
+  font-size: 3rem;
+}
+
+p {
+  margin-top: 0;
+}
+
+@media screen and (min-width: 1024px) {
+  body {
+    font-size: 2.5rem;
+  }
+
+  h1 {
+    font-size: 8rem;
+    padding-bottom: 10px;
+  }
+
+  h2 {
+    font-size: 4rem;
+  }
+
+  h3 {
+    font-size: 2.4rem;
+  }
+}
+
+
+
+
+    
+
+.main{
+    display: flex;
+}
+.other{
+ margin-top: 100px;
+ margin-left: 60px;
+ margin-right:200px;
+ display: flex;
+}
+
+.other_body{
+  margin-left: 60px;
+ margin-left: 200px;
+  
+}
+.contact{
+  margin-top: 100px;
+  
+
+}
+.product_img{
+  width:500px;
+  border-radius: 30px;
+  margin-right: 50px;
+}
+
+
+.container {
+  max-width: 1700px;
+  margin: 0 auto;
+}
+
+.footnote{
+  font-weight: 300;
+  
+
+  margin-left: 170px;
+  margin-top: 50px;
+}
+
+.icons {
+  width: 40px;
+  height: 40px;
+}
+
+.pairs{
+  display: inline;
+}
+.btn{
+  border-radius: 40px;
+  border: 0;
+  
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 1rem 0;
+  outline: 0;
+  padding: 2rem 3rem;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding-left: 6rem;
+  padding-right: 6rem;
+  background-color:rgb(193, 155, 230);
+}
+
