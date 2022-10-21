@@ -1,10 +1,14 @@
-const { closeDatabase } = require("./db");
+const { writeDbSync } = require("./db");
 const { convertBytesToImage, convertImageToBytes } = require("./utils");
 
 const prepareItem = (item) => {
   const itemObj = {
-    ...item,
+    name: item.itemName,
+    description: item.description,
+    type: item.type,
+    price: item.price,
     image: item.image === "" ? null : convertImageToBytes(item.image),
+    quantity: item.quantity,
   };
   const itemArr = Object.values(itemObj);
   return itemArr;
@@ -22,13 +26,12 @@ const createFoodItem = (database, foodItem) => {
     )
     VALUES(?, ?, ?, ?, ?, ?)`;
   const item = prepareItem(foodItem);
-  database.run(sql, item, function (err) {
-    if (err) {
-      return console.error(err.message);
-    }
-    console.log(`A row has been inserted with rowid ${this.lastID}`);
-  });
-  closeDatabase(database);
+  try {
+    database.run(sql, item);
+    writeDbSync(database);
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 // Insert multiple food items into the database
@@ -43,28 +46,31 @@ const createFoodItems = (database, foodItems) => {
       quantity
     )
     VALUES ${placeholders}`;
-  console.log(sql);
   const items = prepareItem(foodItems);
-  database.run(sql, items, function (err) {
-    if (err) {
-      console.error(err.message);
-    }
-    console.log(`Inserted ${this.changes} inserted.`);
-  });
-  closeDatabase(database);
+  try {
+    database.run(sql, items);
+    writeDbSync(database);
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 const getItems = (database, type) => {
   const sql = `SELECT * FROM food WHERE type = ?`;
-  return new Promise((resolve, reject) => {
-    database.all(sql, [type], (err, rows) => {
-      if (err) reject(err);
-      console.log("Returning rows of food items");
-      rows.map((item) => (item.image = convertBytesToImage(item.image)));
-      resolve(rows);
-    });
-    closeDatabase(database);
-  });
+  let items = [];
+  const stmt = database.prepare(sql);
+  stmt.bind([type]);
+  while (stmt.step()) {
+    let item = stmt.getAsObject();
+    items.push(item);
+  }
+  // Convert bytes to image
+  items.map((item) =>
+    item.image !== null ? (item.image = convertBytesToImage(item.image)) : ""
+  );
+  // Free memory used by statement
+  stmt.free();
+  return items;
 };
 
 module.exports = { createFoodItem, createFoodItems, getItems };

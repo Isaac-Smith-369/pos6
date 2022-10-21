@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
+    "sql.js": "^1.8.0",
     "sqlite3": "^5.1.2"
   },
   "devDependencies": {

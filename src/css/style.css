@@ -1317,7 +1317,7 @@ section {
 }
 
 .with-side {
-  display: flex;
+  /* display: flex; */
 }
 
 .footer {
@@ -1415,4 +1415,73 @@ section {
   margin: 0px;
   padding: 0px;
   border: 0px;
+}
+
+.heading-box {
+  margin: 1pt 10pt;
+  padding-left: 1pt;
+  width: 96%;
+}
+
+.item-container {
+  width: auto;
+  height: auto;
+  margin: 1rem 2rem;
+  padding: 0pt 1pt;
+}
+
+#itemName {
+  width: 40%;
+  height: 21pt;
+  border-bottom: 1pt solid black;
+  border-right: 1pt solid blue;
+  margin: 0pt 0pt 0pt 65pt;
+}
+
+#type {
+  width: 10%;
+  border: 1pt solid;
+  margin: 9pt 0pt 7pt 75pt;
+}
+
+#image {
+  margin: 0pt 0pt 8pt 12pt;
+}
+
+#description {
+  margin: 0pt 0pt -15pt 110pt;
+  width: 70%;
+  /* height: 29pt; */
+  min-height: 110pt;
+  border-bottom: 1pt solid black;
+  border-right: 1pt solid blue;
+}
+
+#submit {
+  position: absolute;
+  /* margin: 40pt 0pt 0pt 507pt; */
+  margin-top: 40px;
+  margin-left: 2px;
+  font-size: 15pt;
+  border: 2px solid #000;
+  width: 80px;
+  height: 40px;
+}
+
+#submit:hover {
+  color: #fff;
+  background-color: #000;
+  cursor: pointer;
+}
+
+#price {
+  margin: 0pt 0pt 5pt 74pt;
+  border: 0.5pt solid black;
+  width: 10%;
+}
+
+#quantity {
+  margin: 0pt 0pt 5pt 49pt;
+  border: 0.5pt solid black;
+  width: 10%;
 }

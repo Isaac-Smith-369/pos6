@@ -1,48 +1,61 @@
-const sqlite3 = require("sqlite3").verbose();
+const initSqlJs = require("sql.js");
+const fs = require("fs");
+const path = require("path");
 
-// Database will be created automatically if it doesn't exist.
-const connectToDatabase = () => {
-  let db = new sqlite3.Database("./store.db", (err) => {
-    if (err) {
-      console.error(err.message);
-    }
-    console.log("Connected to the database.");
-  });
+// Database path
+const databasebPath = "../../canteen.sqlite";
 
-  return db;
+// Check if database file exists, if not create a new one
+const FindOrCreateDbFile = (dbPath) => {
+  const filePath = path.join(__dirname, dbPath);
+  // console.log(filePath);
+  if (fs.existsSync(filePath)) {
+    const fileBuffer = fs.readFileSync(filePath);
+    return fileBuffer;
+  }
+  fs.writeFileSync(filePath, "");
+  const fileBuffer = fs.readFileSync(filePath);
+  return fileBuffer;
 };
 
-// Close database connection
-const closeDatabase = (database) => {
-  database.close((err) => {
-    if (err) {
-      console.error(err.message);
-    }
-    console.log("Close database connection.");
-  });
+// Connect to database
+const connectToDb = async () => {
+  const dbFileBuffer = FindOrCreateDbFile(databasebPath);
+  const SQL = await initSqlJs();
+  return new SQL.Database(dbFileBuffer);
 };
 
-// This is run everytime the app starts
-const initializeDatabase = (database) => {
+// Write db to disk
+const writeDbSync = (database) => {
+  const data = database.export();
+  const buffer = Buffer.from(data);
+  fs.writeFileSync(path.join(__dirname, databasebPath), buffer);
+  database.close();
+};
+
+// Initialize database
+const initializeDb = (database) => {
   const sql = `CREATE TABLE IF NOT EXISTS food(
-      id INTEGER PRIMARY KEY,
-      name varchar(255) NOT NULL,
-      description TEXT,
-      type varchar(255),
-      price REAL NOT NULL,
-      image BYTE,
-      quantity BIGINT
-    )`;
-  database.run(sql, (err) => {
-    if (err) {
-      console.error(err.message);
-    }
-  });
-  closeDatabase(database);
+    id INTEGER PRIMARY KEY,
+    name varchar(255) NOT NULL,
+    description TEXT,
+    type varchar(255),
+    price REAL NOT NULL,
+    image BYTE,
+    quantity BIGINT
+  ); \
+  CREATE TABLE IF NOT EXISTS users(
+    name varchar(255) PRIMARY KEY,
+    username varchar(255) NOT NULL,
+    password TEXT NOT NULL
+  )`;
+  database.run(sql);
+  console.log("Running migration");
+  writeDbSync(database);
 };
 
 module.exports = {
-  connectToDatabase,
-  initializeDatabase,
-  closeDatabase,
+  connectToDb,
+  initializeDb,
+  writeDbSync,
 };

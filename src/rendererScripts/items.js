@@ -1,42 +1,29 @@
-// Define selectors for ease of use
-const $ = (elementId) => document.getElementById(elementId);
-const $$ = (elementclassName) =>
-  document.getElementsByClassName(elementclassName);
-
-const clearForm = () => {
-  $("itemName").value = "";
-  $("description").value = "";
-  $("image").value = "";
-  $("type").value = "";
-  $("price").value = "";
-  $("quantity").value = "";
+var clearForm = () => {
+  document.getElementById("itemName").value = "";
+  document.getElementById("description").value = "";
+  document.getElementById("image").value = "";
+  document.getElementById("type").value = "";
+  document.getElementById("price").value = "";
+  document.getElementById("quantity").value = "";
 };
 
-// Add new food item
-const addFoodBtn = $("submit");
-addFoodBtn.addEventListener("click", (event, args) => {
-  event.preventDefault();
-  console.log("Script from main.js");
-  const getFilePath = (file) => {
-    if (file) {
-      return file.path;
-    }
-    return "";
-  };
-  const image = $("image").files[0];
-  console.log(image);
-  let food = {
-    name: $("itemName").value,
-    description: $("description").value,
-    type: $("type").value,
-    price: $("price").value,
-    image: getFilePath(image),
-    quantity: $("quantity").value,
-  };
+var getFilePath = (file) => {
+  if (file) {
+    return file.path;
+  }
+  return "";
+};
 
-  window.canteenAPI.createNewFood(food);
-
+var handleSubmit = (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const formProps = Object.fromEntries(formData);
+  const item = { ...formProps, image: getFilePath(formProps.image) };
+  window.itemsAPI.createNewFood(item);
   console.log("Sent request to create new food");
-
   clearForm();
-});
+  alert("Item added succesfully");
+};
+
+var itemForm = document.getElementById("item-form");
+itemForm.addEventListener("submit", handleSubmit);

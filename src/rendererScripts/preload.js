@@ -1,26 +1,23 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
-const createNewFood = (food) => {
-  console.log("Script from preload.js");
-  // Send the `food` object to the main process
-  // for procesing.
-  ipcRenderer.send("db:addNewFood", food);
-};
-
-const getAllFoods = () => {
-  const result = ipcRenderer.sendSync("db:getAllFoods");
-  return result;
+const usersApiIndex = {
+  createNewUser: (user) => ipcRenderer.invoke("users:create", user),
+  logIn: (user) => ipcRenderer.invoke("users:login", user),
+  getCurrentUser: () => ipcRenderer.invoke("users:currentUser"),
 };
 
 const routingApiIndex = {
-  getDefaultView: () => ipcRenderer.invoke("routes:getDefault"),
-  navigateTo: (route) => ipcRenderer.invoke("routes:navigate", route),
+  getDefaultView: () => ipcRenderer.invoke("routes:getDefaultView"),
+  navigateToView: (view) => ipcRenderer.invoke("routes:navigateView", view),
+  getDefaultRoute: () => ipcRenderer.invoke("routes:getDefaultRoute"),
+  navigateToRoute: (route) => ipcRenderer.invoke("routes:navigateRoute", route),
 };
 
 const ItemsApiIndex = {
-  createNewFood: createNewFood,
-  getAllFoods: getAllFoods,
+  getAllFoods: () => ipcRenderer.invoke("db:getAllFoods"),
+  createNewFood: (food) => ipcRenderer.invoke("db:addNewFood", food),
 };
 
+contextBridge.exposeInMainWorld("usersAPI", usersApiIndex);
 contextBridge.exposeInMainWorld("routingAPI", routingApiIndex);
 contextBridge.exposeInMainWorld("itemsAPI", ItemsApiIndex);

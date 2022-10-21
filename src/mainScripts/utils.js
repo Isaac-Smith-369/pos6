@@ -16,9 +16,21 @@ const convertImageToBytes = (imagePath) => {
 
 // Read bytes into an image file
 const convertBytesToImage = (imageBlob) => {
-  const imagePath = path.join(__dirname, `../tmp/${generateRandomStr()}.jpg`);
+  const tmpDir = `${__dirname}/tmp`;
+  if (!fs.existsSync(tmpDir)) {
+    fs.mkdirSync(tmpDir);
+  }
+  const imagePath = path.join(tmpDir, `/${generateRandomStr()}.jpg`);
   fs.writeFileSync(imagePath, imageBlob);
   return imagePath;
+};
+
+// Check if a file is available or not
+const CheckFileExists = (filePath) => {
+  if (fs.existsSync(filePath)) {
+    return true;
+  }
+  return false;
 };
 
 // Return the version of the NodeJS environment
@@ -29,5 +41,6 @@ const nodeJSVersion = () => {
 module.exports = {
   convertBytesToImage,
   convertImageToBytes,
+  generateRandomStr,
   nodeJSVersion,
 };
