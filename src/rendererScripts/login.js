@@ -17,11 +17,13 @@ var handleRegister = async (e) => {
   console.log("Sent request to create new user");
   const currentUser = await window.usersAPI.createNewUser(user);
   if (currentUser) {
-    navigateToView("Container");
+    appState.user = currentUser;
+    appState.userLoggedIn = true;
+    navigateToRoute("Home");
   } else {
     alert("Coundn't create an account for you. Try again");
   }
-  // clearForm();
+  document.getElementById("register-form").reset();
 };
 
 var handleLogin = async (e) => {
@@ -32,11 +34,13 @@ var handleLogin = async (e) => {
   console.log("Sent request to login");
   const currentUser = await window.usersAPI.logIn(user);
   if (currentUser) {
-    navigateToView("Container");
+    appState.user = currentUser;
+    appState.userLoggedIn = true;
+    navigateToRoute("Home");
   } else {
     alert("Invalid username or password");
   }
-  // clearForm();
+  document.getElementById("login-form").reset();
 };
 
 var userRegister = document.getElementById("register-form");

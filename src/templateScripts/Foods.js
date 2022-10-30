@@ -8,11 +8,13 @@ const Foods = async () => {
   let database = await connectToDb();
   const items = getItems(database, "Foods");
 
+  const name = "Home";
+
   const script = `./rendererScripts/food.js?id=${generateRandomStr()}`;
 
   const template = Items("FOODS", items);
 
-  return { template, script };
+  return { name, template, script };
 };
 
 module.exports = Foods;

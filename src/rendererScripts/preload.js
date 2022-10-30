@@ -7,17 +7,21 @@ const usersApiIndex = {
 };
 
 const routingApiIndex = {
-  getDefaultView: () => ipcRenderer.invoke("routes:getDefaultView"),
-  navigateToView: (view) => ipcRenderer.invoke("routes:navigateView", view),
   getDefaultRoute: () => ipcRenderer.invoke("routes:getDefaultRoute"),
-  navigateToRoute: (route) => ipcRenderer.invoke("routes:navigateRoute", route),
+  navigateToRoute: (route) =>
+    ipcRenderer.invoke("routes:navigateToRoute", route),
 };
 
-const ItemsApiIndex = {
-  getAllFoods: () => ipcRenderer.invoke("db:getAllFoods"),
-  createNewFood: (food) => ipcRenderer.invoke("db:addNewFood", food),
+const itemsApiIndex = {
+  createNewItem: (item) => ipcRenderer.invoke("db:createNewItem", item),
+};
+
+const ordersApiIndex = {
+  getAllOrders: (user) => ipcRenderer.invoke("db:getAllOrders", user),
+  createNewOrder: (order) => ipcRenderer.invoke("db:createNewOrder", order),
 };
 
 contextBridge.exposeInMainWorld("usersAPI", usersApiIndex);
 contextBridge.exposeInMainWorld("routingAPI", routingApiIndex);
-contextBridge.exposeInMainWorld("itemsAPI", ItemsApiIndex);
+contextBridge.exposeInMainWorld("itemsAPI", itemsApiIndex);
+contextBridge.exposeInMainWorld("ordersAPI", ordersApiIndex);

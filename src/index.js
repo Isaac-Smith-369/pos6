@@ -5,6 +5,7 @@ const path = require("path");
 const fs = require("fs");
 const { createFoodItem } = require("./mainScripts/items");
 const { logUserIn, createNewUser } = require("./mainScripts/users");
+const { createOrder } = require("./mainScripts/orders");
 const { connectToDb, initializeDb } = require("./mainScripts/db");
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -48,27 +49,11 @@ app.on("ready", async () => {
   // Create app window
   createWindow();
 
-  // Set the default view
-  if (state.currentUser) {
-    state.currentViewName = "Container";
-    views.Container().then(({ template, script }) => {
-      state.currentViewContent = template;
-      state.currentViewScript = script;
-    });
-  } else {
-    state.currentViewName = "Login";
-    views.Login().then(({ template, script }) => {
-      state.currentViewContent = template;
-      state.currentViewScript = script;
-    });
-  }
-
   // Set the default route
-  state.currentRouteName = "Home";
-  routes.Home().then(({ template, script }) => {
-    state.currentRouteContent = template;
-    state.currentRouteScript = script;
-  });
+  const { name, template, script } = await routes.Home();
+  state.currentRouteName = name;
+  state.currentRouteContent = template;
+  state.currentRouteScript = script;
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -77,7 +62,10 @@ app.on("ready", async () => {
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     // Delete temporary folder
-    fs.rmSync(`${__dirname}/mainScripts/tmp`, { recursive: true });
+    const tmp = `${__dirname}\\mainScripts\\tmp`;
+    if (fs.existsSync(tmp)) {
+      fs.rmSync(tmp, { recursive: true });
+    }
     app.quit();
   }
 });
@@ -99,47 +87,28 @@ const state = {
   currentViewContent: null,
   currentViewScript: null,
   currentUser: null,
+  loggedIn: false,
 };
 
 // IPC handlers
-
-const handleDefaultView = (state) => {
-  const template = state.currentViewContent;
-  const script = state.currentViewScript;
-  return { template, script };
-};
-
 const handleDefaultRoute = (state) => {
+  const name = state.currentRouteName;
   const template = state.currentRouteContent;
   const script = state.currentRouteScript;
-  return { template, script };
+  return { name, template, script };
 };
 
 const handleNavigateToRoute = async (state, routes, routeName) => {
-  if (state.currentRouteName === routeName) {
-    return;
-  } else {
-    state.currentRouteName = routeName;
-  }
+  // if (state.currentRouteName === routeName) {
+  //   return;
+  // } else {
+  //   state.currentRouteName = routeName;
+  // }
   if (routes && routeName in routes) {
     const route = routes[routeName]().then((routeData) => {
       return routeData;
     });
     return route;
-  }
-};
-
-const handleNavigateToView = async (state, views, viewName) => {
-  if (state.currentViewName === viewName) {
-    return;
-  } else {
-    state.currentViewName = viewName;
-  }
-  if (views && viewName in views) {
-    const view = views[viewName]().then((viewData) => {
-      return viewData;
-    });
-    return view;
   }
 };
 
@@ -160,36 +129,39 @@ const handleLogin = async (state, user) => {
   const currentUser = logUserIn(database, user);
   if (currentUser) {
     state.currentUser = currentUser;
+    state.loggedIn = true;
     return currentUser;
   }
 };
 
-const handlegetCurrentUser = (state) => {
+const handleGetCurrentUser = (state) => {
   return state.currentUser;
 };
 
-// Create a new user
+const handleCreateOrder = async (order) => {
+  const database = await connectToDb();
+  return createOrder(database, order);
+};
+
+// Users
 ipcMain.handle("users:create", (_event, user) => handleCreateUser(state, user));
 ipcMain.handle("users:login", (_event, user) => handleLogin(state, user));
-ipcMain.handle("users:currentUser", (_event) => handlegetCurrentUser(state));
+ipcMain.handle("users:currentUser", (_event) => handleGetCurrentUser(state));
 
-// Add a new food item to the database
-ipcMain.handle("db:addNewFood", async (_event, item) => {
+// Items
+ipcMain.handle("db:createNewItem", async (_event, item) => {
   const database = await connectToDb();
   createFoodItem(database, item);
 });
 
-// Get defaut View
-ipcMain.handle("routes:getDefaultView", () => handleDefaultView(state));
+// Orders
+ipcMain.handle("db:createNewOrder", (_event, order) => {
+  handleCreateOrder(order);
+});
 
-// Get defaut Route
+// Routes
 ipcMain.handle("routes:getDefaultRoute", () => handleDefaultRoute(state));
 
-// Navigate to a route
-ipcMain.handle("routes:navigateRoute", (_event, routeName) =>
+ipcMain.handle("routes:navigateToRoute", (_event, routeName) =>
   handleNavigateToRoute(state, routes, routeName)
-);
-// Navigate to a view
-ipcMain.handle("routes:navigateView", (_event, viewName) =>
-  handleNavigateToView(state, views, viewName)
 );

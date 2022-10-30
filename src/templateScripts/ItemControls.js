@@ -5,8 +5,8 @@ const ItemControls = () => {
           <h1 id="amount" class="amount">GH₵ 0</h1>
         </div>
         <div class="box">
-          <a href="#" id="pay" class="inline-option-btn">pay</a>
-          <a href="#" id="clear" class="inline-option-btn">clear</a>
+          <a href="#!" id="pay" onclick="pay()" class="inline-option-btn">pay</a>
+          <a href="#!" id="clear" onclick="clearCart()" class="inline-option-btn">clear</a>
         </div>
       </div>`;
 };

@@ -1,19 +1,23 @@
-// Convert HTML string to HTML elements
-var htmlStrToNode = (htmlStr) => {
-  let template = document.createElement("template");
-  htmlStr = htmlStr.trim();
-  template.innerHTML = htmlStr;
-  return template.content;
+// Define selectors for ease of use
+let main$ = (elementId) => document.getElementById(elementId);
+var main$$ = (elementclassName) =>
+  document.getElementsByClassName(elementclassName);
+
+let appState = {
+  user: null,
+  cart: [],
+  container: null,
+  userLoggedIn: false,
 };
 
-var appendScriptTagToMain = (parent, script) => {
-  // Buld a script tag and add the custom script tag
+// Buld a script tag and add the custom script tag
+let loadScript = (parent, script) => {
   const scriptTag = document.createElement("script");
-  // Execute after all html has been parsed
   scriptTag.setAttribute("defer", "");
   scriptTag.setAttribute("src", script);
   scriptTag.onload = () => {
     console.log("Custom script loaded successfully");
+    // main$("username").innerHTML = appState.user.name;
   };
   scriptTag.onerror = () => {
     console.log("Error loading script");
@@ -21,26 +25,74 @@ var appendScriptTagToMain = (parent, script) => {
   parent.appendChild(scriptTag);
 };
 
-var hydrateMain = (content) => {
-  const currentView = document.getElementById("current-view");
-  // Clear all elements before applying new route content
-  currentView.replaceChildren();
-  currentView.innerHTML = content.template;
-  // currentView.append(htmlStrToNode(content.template));
-  appendScriptTagToMain(currentView, content.script);
+// Convert HTML string to HTML elements
+let htmlStrToHtmlNode = (htmlStr) => {
+  let template = document.createElement("template");
+  htmlStr = htmlStr.trim();
+  template.innerHTML = htmlStr;
+  return template.content;
 };
 
-// Load the default view when DOM content is loaded
-document.addEventListener("DOMContentLoaded", async () => {
-  const content = await window.routingAPI.getDefaultView();
-  hydrateMain(content);
-});
+let hydrateLogin = (content) => {
+  let rootNode = document.getElementsByTagName("html")[0];
+  rootNode.replaceChildren();
+  rootNode.innerHTML = content.template;
+  loadScript(rootNode, content.script);
+};
 
-var navigateToView = (viewName) => {
-  window.routingAPI.navigateToView(viewName).then((res) => {
-    if (res) {
-      hydrateMain(res);
-    }
-  });
+let hydrateHome = (content) => {
+  let rootNode = document.getElementsByTagName("html")[0];
+  if (appState.userLoggedIn) {
+    rootNode.replaceChildren();
+    rootNode.innerHTML = appState.container;
+  }
+  if (content.name === "Login") {
+    return;
+  } else {
+    const mainContent = main$("main-content");
+    mainContent.replaceChildren();
+    mainContent.innerHTML = content.template;
+    main$("username").innerHTML = appState.user.name;
+    appState.userLoggedIn = false;
+    loadScript(rootNode, content.script);
+  }
+};
+
+let navigate = async (element) => {
+  const routeName = element.getAttribute("data-route");
+  let res = await window.routingAPI.navigateToRoute(routeName);
+  if (res) {
+    hydrateHome(res);
+  }
   return false;
 };
+
+let navigateToRoute = async (routeName) => {
+  let res = await window.routingAPI.navigateToRoute(routeName);
+  if (res) {
+    hydrateHome(res);
+  }
+};
+
+let checkout = async () => {
+  if (appState.cart.length < 1) {
+    return;
+  } else {
+    console.log(appState.cart);
+    await window.ordersAPI.createNewOrder(appState.cart);
+    navigateToRoute("Home");
+    alert("Order placed successfully");
+  }
+};
+
+document.addEventListener("DOMContentLoaded", async () => {
+  appState.user = await window.usersAPI.getCurrentUser();
+  appState.container = document.getElementsByTagName("html")[0].innerHTML;
+  let homeContent = await window.routingAPI.getDefaultRoute();
+  let loginContent = await window.routingAPI.navigateToRoute("Login");
+  if (appState.user) {
+    hydrateHome(homeContent);
+  } else {
+    hydrateLogin(loginContent);
+  }
+});

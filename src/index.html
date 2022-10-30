@@ -10,7 +10,53 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
     />
+    <!-- custom css file link  -->
+    <link rel="stylesheet" href="./css/style.css" />
   </head>
-  <body id="current-view"></body>
-  <script id="main-script" defer src="./rendererScripts/main.js"></script>
+  <body>
+    <header class="header">
+      <div class="flex">
+        <a href="#!" class="logo">GCTU CANTEEN</a>
+        <form action="search.html" method="post" class="search-form">
+          <input
+            type="text"
+            name="search_box"
+            required
+            placeholder="search foods..."
+            maxlength="100"
+          />
+          <button type="submit" class="fas fa-search"></button>
+        </form>
+        <div class="icons">
+          <div id="search-btn" class="fas fa-search"></div>
+          <div id="cartCount" class="fas">0</div>
+          <div id="user-btn" class="fas fa-arrow-right-from-bracket"></div>
+        </div>
+      </div>
+    </header>
+    <div class="side-bar">
+      <div id="close-btn">
+        <i class="fas fa-times"></i>
+      </div>
+      <div class="profile">
+        <img src="./images/lu.jpg" class="image" alt="" />
+        <h3 class="name" id="username"></h3>
+        <p class="role">Cashier</p>
+      </div>
+      <nav class="navbar">
+        <a href="#" data-route="Home" onclick="return navigate(this)"
+          ><i class="fas fa-bowl-food"></i><span>Foods</span></a
+        >
+        <a href="#" data-route="Drinks" onclick="return navigate(this)"
+          ><i class="fas fa-wine-bottle"></i><span>Drinks</span></a
+        >
+        <a href="#" data-route="AddItem" onclick="return navigate(this)"
+          ><i class="fas fa-plus"></i><span>Add Item</span></a
+        >
+      </nav>
+    </div>
+    <!--The main content will go here -->
+    <div id="main-content"></div>
+  </body>
+  <script defer src="./rendererScripts/main.js"></script>
 </html>

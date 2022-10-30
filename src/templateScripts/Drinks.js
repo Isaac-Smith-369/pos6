@@ -7,11 +7,13 @@ const Drinks = async () => {
   let database = await connectToDb();
   const items = getItems(database, "Drinks");
 
+  const name = "Drinks";
+
   const script = `./rendererScripts/food.js?id=${generateRandomStr()}`;
 
   const template = Items("DRINKS", items);
 
-  return { template, script };
+  return { name, template, script };
 };
 
 module.exports = Drinks;

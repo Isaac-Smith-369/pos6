@@ -35,9 +35,9 @@ const writeDbSync = (database) => {
 
 // Initialize database
 const initializeDb = (database) => {
-  const sql = `CREATE TABLE IF NOT EXISTS food(
+  const sql = `CREATE TABLE IF NOT EXISTS items(
     id INTEGER PRIMARY KEY,
-    name varchar(255) NOT NULL,
+    name varchar(255) UNIQUE NOT NULL,
     description TEXT,
     type varchar(255),
     price REAL NOT NULL,
@@ -45,12 +45,18 @@ const initializeDb = (database) => {
     quantity BIGINT
   ); \
   CREATE TABLE IF NOT EXISTS users(
-    name varchar(255) PRIMARY KEY,
+    name varchar(255) UNIQUE PRIMARY KEY,
     username varchar(255) NOT NULL,
     password TEXT NOT NULL
-  )`;
+  ); \
+  CREATE TABLE IF NOT EXISTS orders(
+    item varchar(255) NOT NULL,
+    quantity INTEGER NOT NULL,
+    total REAL NOT NULL
+  )
+  `;
   database.run(sql);
-  console.log("Running migration");
+  console.log("Running migrations");
   writeDbSync(database);
 };
 

@@ -16,7 +16,7 @@ const prepareItem = (item) => {
 
 // Insert a single food item into the database
 const createFoodItem = (database, foodItem) => {
-  const sql = `INSERT INTO food(
+  const sql = `INSERT INTO items(
       name,
       description,
       type,
@@ -37,7 +37,7 @@ const createFoodItem = (database, foodItem) => {
 // Insert multiple food items into the database
 const createFoodItems = (database, foodItems) => {
   let placeholders = foodItems.map((_) => "(?, ?, ?, ?, ?, ?)").join(",");
-  const sql = `INSERT INTO food(
+  const sql = `INSERT INTO items(
       name,
       description,
       type,
@@ -56,7 +56,7 @@ const createFoodItems = (database, foodItems) => {
 };
 
 const getItems = (database, type) => {
-  const sql = `SELECT * FROM food WHERE type = ?`;
+  const sql = `SELECT * FROM items WHERE type = ?`;
   let items = [];
   const stmt = database.prepare(sql);
   stmt.bind([type]);

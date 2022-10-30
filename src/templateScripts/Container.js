@@ -3,11 +3,9 @@ const { generateRandomStr } = require("../mainScripts/utils");
 const Container = async () => {
   const script = `./rendererScripts/container.js?id=${generateRandomStr()}`;
   const template = `
-    <!-- custom css file link  -->
-    <link rel="stylesheet" href="./css/style.css" />
     <header class="header">
     <div class="flex">
-      <a href="./views/food.html" class="logo">GCTU CANTEEN</a>
+      <a href="#!" class="logo">GCTU CANTEEN</a>
       <form action="search.html" method="post" class="search-form">
         <input
           type="text"
@@ -47,7 +45,7 @@ const Container = async () => {
       >
     </nav>
   </div>
-  <!--The main content will go here</div> -->
+  <!--The main content will go here -->
   <div id="main-content"></div>
     `;
 

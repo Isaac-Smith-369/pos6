@@ -16,13 +16,13 @@ const Items = (name, items) => {
               <img src=${item.image} alt="" />
               <span>${item.quantity} items</span>
             </div>
-            <h3 class="title">${item.name}</h3>
-            <h3 class="title">${item.price}/ pack</h3>
+            <h3  id="item-name" class="title">${item.name}</h3>
+            <h3 id="item-price" class="title">${item.price}/ pack</h3>
             ${Adder()}
             </div>
             `;
             })
-          : `No item have been added yet`
+          : `No item has been added yet`
       }
       </div>
       ${ItemControls()}

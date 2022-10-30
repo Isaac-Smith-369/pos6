@@ -1,7 +1,8 @@
 const { generateRandomStr } = require("../mainScripts/utils");
 
 const AddItem = async () => {
-  const script = `./rendererScripts/items.js?d=${generateRandomStr()}`;
+  const name = "AddItem";
+  const script = `./rendererScripts/items.js?id=${generateRandomStr()}`;
   const template = `
     <div class="with-side">
     <section class="courses">
@@ -45,14 +46,14 @@ const AddItem = async () => {
         ></textarea>
         <br />
 
-        <button type="submit" id="submit" onSubmit="(e) => e.preventDefault()">Submit</button>
+        <button type="submit" id="submit">Submit</button>
       </form>
     </div>
     </section>
   </div>
     `;
 
-  return { template, script };
+  return { name, template, script };
 };
 
 module.exports = AddItem;
